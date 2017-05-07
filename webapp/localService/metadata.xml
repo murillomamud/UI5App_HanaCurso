@@ -1,0 +1,81 @@
+<edmx:Edmx
+    xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx" Version="1.0">
+    <edmx:DataServices
+        xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" m:DataServiceVersion="2.0">
+        <Schema
+            xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices"
+            xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata"
+            xmlns="http://schemas.microsoft.com/ado/2008/09/edm" Namespace="PurchaseOrder.service.PO">
+            <EntityType Name="ProductType">
+                <Key>
+                    <PropertyRef Name="PRODUCTID"/>
+                </Key>
+                <Property Name="PRODUCTID" Type="Edm.String" Nullable="false" MaxLength="10"/>
+                <Property Name="DESCRIPTION" Type="Edm.String" MaxLength="30"/>
+                <Property Name="UNITMEASURE" Type="Edm.String" MaxLength="3"/>
+                <Property Name="RELEASEDATE" Type="Edm.DateTime"/>
+            </EntityType>
+            <EntityType Name="HeaderType">
+                <Key>
+                    <PropertyRef Name="PURCHASEORDERID"/>
+                </Key>
+                <Property Name="PURCHASEORDERID" Type="Edm.String" Nullable="false" MaxLength="10"/>
+                <Property Name="HISTORY.CREATEDBY" Type="Edm.String" MaxLength="10"/>
+                <Property Name="HISTORY.CREATEDAT" Type="Edm.DateTime"/>
+                <Property Name="HISTORY.CHANGEDBY" Type="Edm.String" MaxLength="10"/>
+                <Property Name="HISTORY.CHANGEDAT" Type="Edm.DateTime"/>
+                <Property Name="NOTEID" Type="Edm.String" MaxLength="10"/>
+                <Property Name="CURRENCY" Type="Edm.String" MaxLength="5"/>
+                <Property Name="GROSSAMOUNT" Type="Edm.Decimal" Precision="15" Scale="2"/>
+                <Property Name="NETAMOUNT" Type="Edm.Decimal" Precision="15" Scale="2"/>
+                <Property Name="TAXAMOUNT" Type="Edm.Decimal" Precision="34"/>
+                <Property Name="LIFECYCLESTATUS" Type="Edm.String" MaxLength="1"/>
+                <Property Name="APPROVALSTATUS" Type="Edm.String" MaxLength="1"/>
+                <Property Name="CONFIRMSTATUS" Type="Edm.String" MaxLength="1"/>
+                <Property Name="ORDERINGSTATUS" Type="Edm.String" MaxLength="1"/>
+                <Property Name="INVOINCINGSTATUS" Type="Edm.String" MaxLength="1"/>
+                <Property Name="PARTNERID.PARTNERID" Type="Edm.String" MaxLength="10"/>
+                <NavigationProperty Name="ToLineItems" Relationship="PurchaseOrder.service.PO.ToLineItemsAssociationType" FromRole="HeaderPrincipal" ToRole="ItemDependent"/>
+            </EntityType>
+            <EntityType Name="ItemType">
+                <Key>
+                    <PropertyRef Name="PURCHASEORDERID"/>
+                    <PropertyRef Name="PURCHASEORDERITEM"/>
+                </Key>
+                <Property Name="PURCHASEORDERID" Type="Edm.String" Nullable="false" MaxLength="10"/>
+                <Property Name="PURCHASEORDERITEM" Type="Edm.String" Nullable="false" MaxLength="10"/>
+                <Property Name="NOTEID" Type="Edm.String" MaxLength="10"/>
+                <Property Name="CURRENCY" Type="Edm.String" MaxLength="5"/>
+                <Property Name="GROSSAMOUNT" Type="Edm.Decimal" Precision="15" Scale="2"/>
+                <Property Name="NETAMOUNT" Type="Edm.Decimal" Precision="15" Scale="2"/>
+                <Property Name="TAXAMOUNT" Type="Edm.Decimal" Precision="34"/>
+                <Property Name="QUANTITY" Type="Edm.Decimal" Precision="13" Scale="3"/>
+                <Property Name="QUANTITYUNIT" Type="Edm.String" MaxLength="3"/>
+                <Property Name="DELIVERYDATE" Type="Edm.DateTime"/>
+                <Property Name="PRODUCT.PRODUCTID" Type="Edm.String" MaxLength="10"/>
+                <NavigationProperty Name="ToHeader" Relationship="PurchaseOrder.service.PO.ToHeaderAssociationType" FromRole="ItemPrincipal" ToRole="HeaderDependent"/>
+            </EntityType>
+            <Association Name="ToLineItemsAssociationType">
+                <End Type="PurchaseOrder.service.PO.HeaderType" Role="HeaderPrincipal" Multiplicity="1"/>
+                <End Type="PurchaseOrder.service.PO.ItemType" Role="ItemDependent" Multiplicity="*"/>
+            </Association>
+            <Association Name="ToHeaderAssociationType">
+                <End Type="PurchaseOrder.service.PO.ItemType" Role="ItemPrincipal" Multiplicity="1"/>
+                <End Type="PurchaseOrder.service.PO.HeaderType" Role="HeaderDependent" Multiplicity="1"/>
+            </Association>
+            <EntityContainer Name="PO" m:IsDefaultEntityContainer="true">
+                <EntitySet Name="Product" EntityType="PurchaseOrder.service.PO.ProductType"/>
+                <EntitySet Name="Header" EntityType="PurchaseOrder.service.PO.HeaderType"/>
+                <EntitySet Name="Item" EntityType="PurchaseOrder.service.PO.ItemType"/>
+                <AssociationSet Name="ToLineItemsAssociation" Association="PurchaseOrder.service.PO.ToLineItemsAssociationType">
+                    <End Role="HeaderPrincipal" EntitySet="Header"/>
+                    <End Role="ItemDependent" EntitySet="Item"/>
+                </AssociationSet>
+                <AssociationSet Name="ToHeaderAssociation" Association="PurchaseOrder.service.PO.ToHeaderAssociationType">
+                    <End Role="ItemPrincipal" EntitySet="Item"/>
+                    <End Role="HeaderDependent" EntitySet="Header"/>
+                </AssociationSet>
+            </EntityContainer>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>
